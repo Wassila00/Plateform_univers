@@ -1,0 +1,17 @@
+# === BACKEND (Spring Boot) ===
+/Backend/target/
+/Backend/.idea/
+/Backend/.mvn/
+/Backend/*.iml
+/Backend/.env
+/Backend/application.properties
+
+# === FRONTEND (React) ===
+/Frontend/node_modules/
+/Frontend/build/
+/Frontend/.env
+
+# === GÉNÉRAL ===
+*.log
+.DS_Store
+.env
