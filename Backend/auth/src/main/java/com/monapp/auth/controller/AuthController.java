@@ -62,7 +62,7 @@ public class AuthController {
         if (role.equals("ROLE_ADMIN")) {
             return "redirect:/dashboard";
         } else {
-                return "redirect:http://localhost:3000";
+                return "forward:/index.html";
         }
     }
 
