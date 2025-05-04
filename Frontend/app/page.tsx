@@ -1,3 +1,5 @@
+
+'use client'
 import Link from "next/link"
 import Image from "next/image"
 import DynamicBackground from "@/components/dynamic-background"
@@ -30,18 +32,22 @@ export default function Home() {
           <h1 className="text-5xl md:text-7xl font-bold tracking-wider text-white">SYSTÈME SOLAIRE</h1>
 
           <div className="pt-12">
-            <button className="group relative overflow-hidden rounded-full bg-gradient-to-r from-amber-500 to-amber-600 px-14 py-6 text-xl font-bold text-white shadow-lg shadow-amber-900/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-amber-700/50">
-              <span className="relative z-10 flex flex-col items-center">
-                <span className="text-2xl tracking-wider">COMMENCER</span>
-                <span className="block text-sm font-normal opacity-80">MODÈLE EN LIGNE</span>
-              </span>
-              <span className="absolute inset-0 -translate-y-full bg-gradient-to-r from-amber-400 to-amber-600 transition-transform duration-300 group-hover:translate-y-0"></span>
-              <span className="absolute inset-0 translate-y-full bg-gradient-to-r from-amber-600 to-amber-400 transition-transform duration-300 group-hover:translate-y-0"></span>
-              <span className="absolute left-0 top-0 h-[2px] w-full bg-gradient-to-r from-transparent via-amber-200 to-transparent opacity-50"></span>
-              <span className="absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-amber-200 to-transparent opacity-50"></span>
-              <span className="absolute left-0 top-0 h-full w-[2px] bg-gradient-to-b from-transparent via-amber-200 to-transparent opacity-50"></span>
-              <span className="absolute right-0 top-0 h-full w-[2px] bg-gradient-to-b from-transparent via-amber-200 to-transparent opacity-50"></span>
-            </button>
+          <button
+  onClick={() => window.location.href = "http://localhost:8080/login"}
+  className="group relative overflow-hidden rounded-full bg-gradient-to-r from-amber-500 to-amber-600 px-14 py-6 text-xl font-bold text-white shadow-lg shadow-amber-900/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-amber-700/50"
+>
+  <span className="relative z-10 flex flex-col items-center">
+    <span className="text-2xl tracking-wider">COMMENCER</span>
+    <span className="block text-sm font-normal opacity-80">MODÈLE EN LIGNE</span>
+  </span>
+  <span className="absolute inset-0 -translate-y-full bg-gradient-to-r from-amber-400 to-amber-600 transition-transform duration-300 group-hover:translate-y-0"></span>
+  <span className="absolute inset-0 translate-y-full bg-gradient-to-r from-amber-600 to-amber-400 transition-transform duration-300 group-hover:translate-y-0"></span>
+  <span className="absolute left-0 top-0 h-[2px] w-full bg-gradient-to-r from-transparent via-amber-200 to-transparent opacity-50"></span>
+  <span className="absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-amber-200 to-transparent opacity-50"></span>
+  <span className="absolute left-0 top-0 h-full w-[2px] bg-gradient-to-b from-transparent via-amber-200 to-transparent opacity-50"></span>
+  <span className="absolute right-0 top-0 h-full w-[2px] bg-gradient-to-b from-transparent via-amber-200 to-transparent opacity-50"></span>
+</button>
+
           </div>
 
           <div className="pt-12">
