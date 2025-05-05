@@ -24,7 +24,7 @@ pipeline {
         stage('Test Backend') {
             steps {
                 dir('Backend/auth') {
-                    sh 'mvn test'
+                    bat 'mvn test'
                 }
             }
         }
