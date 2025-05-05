@@ -3,7 +3,7 @@ pipeline {
 
     tools {
         maven 'Maven'
-        jdk 'JDK17'
+        jdk 'JDK'
     }
 
     stages {
@@ -16,7 +16,7 @@ pipeline {
         stage('Build Backend (Spring Boot)') {
             steps {
                 dir('Backend/auth') {
-                    sh 'mvn clean install -DskipTests=false'
+                    bat 'mvn clean install'
                 }
             }
         }
@@ -29,19 +29,11 @@ pipeline {
             }
         }
 
-        stage('Archive Test Results') {
-            steps {
-                dir('Backend/auth') {
-                    junit '**/target/surefire-reports/*.xml'
-                }
-            }
-        }
-
         stage('Build Frontend (Next.js)') {
             steps {
                 dir('Frontend') {
-                    sh 'npm install'
-                    sh 'npm run build'
+                    bat 'npm install'
+                    bat 'npm run build'
                 }
             }
         }
@@ -50,18 +42,6 @@ pipeline {
             steps {
                 echo 'Déploiement à Docker/Kubernetes ici plus tard'
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline terminé.'
-        }
-        success {
-            echo 'Tout est OK ✅'
-        }
-        failure {
-            echo 'Échec du pipeline ❌'
         }
     }
 }
