@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./Backend/auth
+    ports:
+      - "8080:8080"
+    container_name: solar-backend
+    depends_on:
+      - frontend
+
+  frontend:
+    build:
+      context: ./Frontend
+    ports:
+      - "3000:3000"
+    container_name: solar-frontend
