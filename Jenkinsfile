@@ -78,15 +78,24 @@ pipeline {
                 }
             }
         }
-           stage('Deploy with Docker Compose') {
-            steps {
-                dir("${env.WORKSPACE}") {
-                    echo "📄 Vérifions le contenu du .env :"
-                    bat 'type .env'
-                    bat 'docker-compose down || exit 0'
-                    bat 'docker-compose --env-file .env up -d'
+          stage('Deploy with Docker Compose') {
+                steps {
+                    dir("${env.WORKSPACE}") {
+                        withCredentials([usernamePassword(
+                            credentialsId: "${DOCKER_CREDENTIALS_ID}",
+                            usernameVariable: 'DOCKER_USER',
+                            passwordVariable: 'DOCKER_PASS'
+                        )]) {
+                            bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                        }
+            
+                        echo "📄 Vérifions le contenu du .env :"
+                        bat 'type .env'
+                        bat 'docker-compose down || exit 0'
+                        bat 'docker-compose --env-file .env up -d'
+                    }
                 }
             }
-        }
+
     }
 }
