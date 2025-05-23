@@ -4,6 +4,7 @@ services:
   backend:
     build:
       context: ./Backend/auth
+      image: ${BACKEND_IMAGE}
     ports:
       - "8080:8080"
     container_name: solar-backend
@@ -13,6 +14,7 @@ services:
   frontend:
     build:
       context: ./Frontend
+      image: ${FRONTEND_IMAGE}
     ports:
       - "3000:3000"
     container_name: solar-frontend
