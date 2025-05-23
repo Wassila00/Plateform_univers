@@ -21,31 +21,152 @@ pipeline {
                 git 'https://github.com/Wassila00/Plateform_univers.git'
             }
         }
+        
+        stage('Build Backend (Spring Boot)') {
+            steps {
+                dir('Backend/auth') {
+                    bat 'mvn clean install'
+                }
+            }
+        }
 
-         stage('Deploy with Docker Compose') {
+        stage('Test Backend') {
+            steps {
+                dir('Backend/auth') {
+                    bat 'mvn test'
+                }
+            }
+        }
+
+        stage('Build Frontend (Next.js)') {
+            steps {
+                dir('Frontend') {
+                    bat 'npm install'
+                    bat 'npm run build'
+                }
+            }
+        }
+         stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: "${DOCKER_CREDENTIALS_ID}", 
+                    usernameVariable: 'DOCKER_USER', 
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    bat """
+                        echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                    """
+                }
+            }
+        }
+       stage('Build and Push Docker Images') {
                 steps {
-                    dir("${env.WORKSPACE}") {
-                        withCredentials([usernamePassword(
-                            credentialsId: "${DOCKER_CREDENTIALS_ID}",
-                            usernameVariable: 'DOCKER_USER',
-                            passwordVariable: 'DOCKER_PASS'
-                        )]) {
-                            bat """
-                                echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
-                                echo === .env content ===
-                                type .env
-                                echo === docker-compose config ===
-                                docker-compose --env-file .env config
-                                echo === pulling manually for test ===
-                                docker pull %FRONTEND_IMAGE%
-                                docker pull %BACKEND_IMAGE%
-                                docker-compose --env-file .env down || exit 0
-                                docker-compose --env-file .env up -d
-                            """
-                        }
+                    script {
+                        def backendTag = "${REGISTRY}/${REPOSITORY}/${BACKEND_IMAGE}:${env.BUILD_NUMBER}"
+                        def frontendTag = "${REGISTRY}/${REPOSITORY}/${FRONTEND_IMAGE}:${env.BUILD_NUMBER}"
+    
+                        bat "docker build -t ${backendTag} -f Backend/auth/Dockerfile ./Backend/auth"
+                        bat "docker build -t ${frontendTag} -f Frontend/Dockerfile ./Frontend"
+    
+                        bat "docker push ${backendTag}"
+                        bat "docker push ${frontendTag}"
+    
+                        writeFile file: '.env', text: """
+                        BACKEND_IMAGE=${backendTag}
+                        FRONTEND_IMAGE=${frontendTag}
+                        """.stripIndent()
                     }
                 }
             }
+
+
+        stage('Generate Kubernetes Deployment') {
+                steps {
+                    script {
+                        def backendImage = "docker.io/ssissila/image-backend:${env.BUILD_NUMBER}"
+                        def frontendImage = "docker.io/ssissila/image-frontend:${env.BUILD_NUMBER}"
+            
+                        writeFile file: 'k8s/k8s-deploy.yaml', text: """
+            ---
+            apiVersion: apps/v1
+            kind: Deployment
+            metadata:
+              name: backend-deployment
+            spec:
+              replicas: 1
+              selector:
+                matchLabels:
+                  app: backend
+              template:
+                metadata:
+                  labels:
+                    app: backend
+                spec:
+                  containers:
+                    - name: backend
+                      image: ${backendImage}
+                      ports:
+                        - containerPort: 8080
+            
+            ---
+            apiVersion: v1
+            kind: Service
+            metadata:
+              name: backend-service
+            spec:
+              selector:
+                app: backend
+              ports:
+                - port: 8080
+                  targetPort: 8080
+              type: ClusterIP
+            
+            ---
+            apiVersion: apps/v1
+            kind: Deployment
+            metadata:
+              name: frontend-deployment
+            spec:
+              replicas: 1
+              selector:
+                matchLabels:
+                  app: frontend
+              template:
+                metadata:
+                  labels:
+                    app: frontend
+                spec:
+                  containers:
+                    - name: frontend
+                      image: ${frontendImage}
+                      ports:
+                        - containerPort: 3000
+            
+            ---
+            apiVersion: v1
+            kind: Service
+            metadata:
+              name: frontend-service
+            spec:
+              selector:
+                app: frontend
+              ports:
+                - port: 3000
+                  targetPort: 3000
+                  nodePort: 32000
+              type: NodePort
+            """.stripIndent()
+                    }
+                }
+            }
+        stage('Deploy to Kubernetes') {
+            steps {
+                dir("${env.WORKSPACE}") {
+                    bat 'kubectl config use-context minikube'
+                    bat 'kubectl apply -f k8s/k8s-deploy.yaml'
+                }
+            }
+        }
 
 
     }
