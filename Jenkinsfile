@@ -159,14 +159,15 @@ pipeline {
                     }
                 }
             }
-        stage('Deploy to Kubernetes') {
+               stage('Deploy to Kubernetes') {
             steps {
                 dir("${env.WORKSPACE}") {
-                    bat 'kubectl config use-context minikube'
+                    echo '🚀 Déploiement dans le cluster Kubernetes...'
                     bat 'kubectl apply -f k8s/k8s-deploy.yaml'
                 }
             }
         }
+
 
 
     }
