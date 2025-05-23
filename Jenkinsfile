@@ -22,7 +22,7 @@ pipeline {
             }
         }
 
-          stage('Deploy with Docker Compose') {
+         stage('Deploy with Docker Compose') {
                 steps {
                     dir("${env.WORKSPACE}") {
                         withCredentials([usernamePassword(
@@ -30,16 +30,23 @@ pipeline {
                             usernameVariable: 'DOCKER_USER',
                             passwordVariable: 'DOCKER_PASS'
                         )]) {
-                            bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                            bat """
+                                echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                                echo === .env content ===
+                                type .env
+                                echo === docker-compose config ===
+                                docker-compose --env-file .env config
+                                echo === pulling manually for test ===
+                                docker pull %FRONTEND_IMAGE%
+                                docker pull %BACKEND_IMAGE%
+                                docker-compose --env-file .env down || exit 0
+                                docker-compose --env-file .env up -d
+                            """
                         }
-            
-                        echo "📄 Vérifions le contenu du .env :"
-                        bat 'type .env'
-                        bat 'docker-compose down || exit 0'
-                        bat 'docker-compose --env-file .env up -d'
                     }
                 }
             }
+
 
     }
 }
