@@ -81,7 +81,7 @@ pipeline {
        stage('Deploy with Docker Compose') {
             steps {
                 bat 'docker-compose down || exit 0'
-                bat 'docker-compose up --build -d'
+                bat 'docker-compose up -d'
             }
         }
     }
