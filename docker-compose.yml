@@ -2,9 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    build:
-      context: ./Backend/auth
-      image: ${BACKEND_IMAGE}
+    image: ${BACKEND_IMAGE} 
     ports:
       - "8080:8080"
     container_name: solar-backend
@@ -12,9 +10,7 @@ services:
       - frontend
 
   frontend:
-    build:
-      context: ./Frontend
-      image: ${FRONTEND_IMAGE}
+    image: ${FRONTEND_IMAGE}  
     ports:
       - "3000:3000"
     container_name: solar-frontend
