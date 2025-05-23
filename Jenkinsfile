@@ -78,13 +78,15 @@ pipeline {
                 }
             }
         }
-       stage('Deploy with Docker Compose') {
+      stage('Deploy with Docker Compose') {
             steps {
-              dir("${env.WORKSPACE}") {
-                        bat 'docker-compose down || exit 0'
-                        bat 'docker-compose up -d'
-                    }
+                dir("${env.WORKSPACE}") {
+                    bat 'type .env' // pour afficher le contenu et valider
+                    bat 'docker-compose down || exit 0'
+                    bat 'docker-compose up -d'
+                }
             }
         }
+
     }
 }
