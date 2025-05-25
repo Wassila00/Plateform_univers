@@ -187,9 +187,6 @@ Un système de supervision est intégré pour observer l’état de l’applicat
 - `Jenkinsfile` – Définit toutes les étapes CI/CD
 - `Dockerfile` – Définit la construction des images pour le backend et frontend
 - `k8s/k8s-deploy.yaml` – Génére dynamiquement les ressources Kubernetes
-- monitoring/prometheus-config.yaml – Configuration de Prometheus
-- monitoring/grafana-deploy.yaml – Déploiement de Grafana
-- monitoring/dashboards/ – Dashboards personnalisés (au format JSON)
 
 ---
 
