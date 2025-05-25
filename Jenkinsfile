@@ -79,8 +79,14 @@ pipeline {
                 }
             }
         }
-
-        stage('Generate Kubernetes Deployment') {
+        stage('Check Minikube') {
+            steps {
+                bat '''
+                    minikube status || minikube start --driver=docker --apiserver-name=localhost
+                '''
+            }
+        }
+        stage('Kubernetes Deployment') {
             steps {
                 script {
                     def backendTag = "${REGISTRY}/${REPOSITORY}/${BACKEND_IMAGE}:${env.BUILD_NUMBER}"
