@@ -41,7 +41,7 @@ pipeline {
             steps {
                 dir('Frontend') {
                     bat 'npm install'
-                    bat 'npm run build'
+                    bat 'set NEXT_FORCE_SWCPP=1 && npm run build'
                 }
             }
         }
