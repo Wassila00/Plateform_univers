@@ -5,23 +5,22 @@ pipeline {
         maven 'Maven'
         jdk 'JDK17'
     }
-  environment {
+
+    environment {
         REGISTRY = 'docker.io'    
         REPOSITORY = 'ssissila' 
-       
         BACKEND_IMAGE = 'image-backend'   
         FRONTEND_IMAGE = 'image-frontend' 
-
         DOCKER_CREDENTIALS_ID = 'dockerhub-login' 
-      
     }
+
     stages {
         stage('Checkout') {
             steps {
                 git 'https://github.com/Wassila00/Plateform_univers.git'
             }
         }
-        
+
         stage('Build Backend (Spring Boot)') {
             steps {
                 dir('Backend/auth') {
@@ -46,7 +45,8 @@ pipeline {
                 }
             }
         }
-         stage('Docker Login') {
+
+        stage('Docker Login') {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: "${DOCKER_CREDENTIALS_ID}", 
@@ -59,38 +59,35 @@ pipeline {
                 }
             }
         }
-   
-       stage('Build and Push Docker Images') {
-                steps {
-                    script {
-                        def backendTag = "${REGISTRY}/${REPOSITORY}/${BACKEND_IMAGE}:${env.BUILD_NUMBER}"
-                        def frontendTag = "${REGISTRY}/${REPOSITORY}/${FRONTEND_IMAGE}:${env.BUILD_NUMBER}"
-    
-                        bat "docker build -t ${backendTag} -f Backend/auth/Dockerfile ./Backend/auth"
-                        bat "docker build -t ${frontendTag} -f Frontend/Dockerfile ./Frontend"
-    
-                        bat "docker push ${backendTag}"
-                        bat "docker push ${frontendTag}"
-    
-                        writeFile file: '.env', text: """
-                        BACKEND_IMAGE=${backendTag}
-                        FRONTEND_IMAGE=${frontendTag}
-                        """.stripIndent()
-                    }
+
+        stage('Build and Push Docker Images') {
+            steps {
+                script {
+                    def backendTag = "${REGISTRY}/${REPOSITORY}/${BACKEND_IMAGE}:${env.BUILD_NUMBER}"
+                    def frontendTag = "${REGISTRY}/${REPOSITORY}/${FRONTEND_IMAGE}:${env.BUILD_NUMBER}"
+
+                    bat "docker build -t ${backendTag} -f Backend/auth/Dockerfile ./Backend/auth"
+                    bat "docker build -t ${frontendTag} -f Frontend/Dockerfile ./Frontend"
+
+                    bat "docker push ${backendTag}"
+                    bat "docker push ${frontendTag}"
+
+                    writeFile file: '.env', text: """
+                    BACKEND_IMAGE=${backendTag}
+                    FRONTEND_IMAGE=${frontendTag}
+                    """.stripIndent()
                 }
             }
-
-
+        }
 
         stage('Generate Kubernetes Deployment') {
-                steps {
-                    script {
-                         def backendTag = "${REGISTRY}/${REPOSITORY}/${BACKEND_IMAGE}:${env.BUILD_NUMBER}"
-                         def frontendTag = "${REGISTRY}/${REPOSITORY}/${FRONTEND_IMAGE}:${env.BUILD_NUMBER}"
+            steps {
+                script {
+                    def backendTag = "${REGISTRY}/${REPOSITORY}/${BACKEND_IMAGE}:${env.BUILD_NUMBER}"
+                    def frontendTag = "${REGISTRY}/${REPOSITORY}/${FRONTEND_IMAGE}:${env.BUILD_NUMBER}"
 
-            
-                        writeFile file: 'k8s/k8s-deploy.yaml', text: """
-            ---
+                    writeFile file: 'k8s/k8s-deploy.yaml', text: """
+            --- 
             apiVersion: apps/v1
             kind: Deployment
             metadata:
@@ -107,10 +104,10 @@ pipeline {
                 spec:
                   containers:
                     - name: backend
-                      image: ${backendImage}
+                      image: ${backendTag}
                       ports:
                         - containerPort: 8080
-            
+
             ---
             apiVersion: v1
             kind: Service
@@ -123,7 +120,7 @@ pipeline {
                 - port: 8080
                   targetPort: 8080
               type: ClusterIP
-            
+
             ---
             apiVersion: apps/v1
             kind: Deployment
@@ -141,10 +138,10 @@ pipeline {
                 spec:
                   containers:
                     - name: frontend
-                      image: ${frontendImage}
+                      image: ${frontendTag}
                       ports:
                         - containerPort: 3000
-            
+
             ---
             apiVersion: v1
             kind: Service
@@ -158,11 +155,12 @@ pipeline {
                   targetPort: 3000
                   nodePort: 32000
               type: NodePort
-            """.stripIndent()
-                    }
+                    """.stripIndent()
                 }
             }
-               stage('Deploy to Kubernetes') {
+        }
+
+        stage('Deploy to Kubernetes') {
             steps {
                 dir("${env.WORKSPACE}") {
                     echo '🚀 Déploiement dans le cluster Kubernetes...'
@@ -170,8 +168,15 @@ pipeline {
                 }
             }
         }
+    }
 
+    post {
+        always {
+            echo ' Nettoyage du workspace Jenkins...'
+            cleanWs()
 
-
+            echo ' Nettoyage Docker...'
+             bat 'docker system prune -af' 
+        }
     }
 }
