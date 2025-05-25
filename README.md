@@ -139,12 +139,14 @@ Projet open-source – Licence MIT
 En cas de questions, ouvrez un ticket GitHub ou contactez les membres de l'équipe.
 
 ## Conception
-
+Diagramme de cas d'utilisation
 ![Use case diagram](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/use_case.png?raw=true)
 
+Diagramme de séquence
 ![Diagramme_Sequence](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/sequence.png?raw=true)
 
-![Diagramme_Classes](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/diagramme_classes?raw=true)
+Diagramme de classes
+![Diagramme_Classes](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/diagramme_classes_naza.png?raw=true)
 
 
 
