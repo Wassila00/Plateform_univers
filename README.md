@@ -25,6 +25,17 @@ Une application web immersive pour visualiser le système solaire, consulter les
 
 ---
 
+
+## Conception
+Diagramme de cas d'utilisation
+![Use case diagram](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/use_case.png?raw=true)
+
+Diagramme de séquence
+![Diagramme_Sequence](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/sequence.png?raw=true)
+
+Diagramme de classes
+![Diagramme_Classes](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/diagramme_classes_naza.png?raw=true)
+
 ## ⚙️ Technologies utilisées
 
 | Domaine        | Technologie                   | Version recommandée     |
@@ -118,35 +129,77 @@ npm run start-all
 ```
 
 ---
+#  Partie DEVOPS
+## 🚀 CI/CD Pipeline avec Jenkins, Docker et Kubernetes
 
-## 👩‍🚀 Membres de l’équipe
+Ce projet utilise un pipeline CI/CD automatisé géré par **Jenkins**, avec déploiement sur un cluster **Kubernetes local (Minikube)**.
 
-- Wassila
-- Rida
-- Wafae
-- Ali
+### ⚙️ Étapes du pipeline
+
+1. **📥 Clone du dépôt**
+   - Jenkins récupère le code depuis GitHub via webhook déclenché à chaque `git push`.
+
+2. **🔨 Build du backend**
+   - Le projet Spring Boot (`/Backend/auth`) est compilé avec Maven.
+
+3. **🧪 Tests unitaires**
+   - Les tests sont exécutés automatiquement avec `mvn test`.
+
+4. **🌐 Build du frontend**
+   - Le frontend Next.js (`/Frontend`) est construit avec `npm install && npm run build`.
+
+5. **🐳 Création et Push des images Docker**
+   - Deux images sont générées : 
+     - `ssissila/image-backend:<build_number>`
+     - `ssissila/image-frontend:<build_number>`
+   - Elles sont automatiquement poussées sur [DockerHub](https://hub.docker.com/u/ssissila).
+
+6. **Check de Minikube**
+   - vérification du cluster Minikube.
+
+7. **☸️ Déploiement Kubernetes**
+   - Un fichier `k8s/k8s-deploy.yaml` est généré dynamiquement avec les bons tags d’image.
+   - Jenkins déploie le backend et frontend dans un cluster Minikube.
+
+8. **🧹 Nettoyage**
+   - Le `workspace` est nettoyé après chaque build pour libérer l’espace disque.
+
+---
+
+### 🧪 Déclenchement automatique
+
+Le pipeline est lancé automatiquement à chaque `commit` grâce à un **webhook GitHub** configuré via **ngrok** 
+
+
+---
+
+### 📁 Fichiers clés
+
+- `Jenkinsfile` – Définit toutes les étapes CI/CD
+- `Dockerfile` – Définit la construction des images pour le backend et frontend
+- `k8s/k8s-deploy.yaml` – Génére dynamiquement les ressources Kubernetes
+
+---
+
+> 🔐 Accès DockerHub : les identifiants sont gérés via `dockerhub-login` dans Jenkins Credentials
 
 ---
 
 ## 📄 Licence
 
-Projet open-source – Licence MIT
+Projet open-source
 
 ---
+## 👩‍🚀 Membres de l’équipe
 
+- ASRI Wassila
+- ELHAIBA Rida
+- ANANOUCH Wafae
+- DARIR Ali
+
+---
 ## 📬 Contact
 
 En cas de questions, ouvrez un ticket GitHub ou contactez les membres de l'équipe.
-
-## Conception
-Diagramme de cas d'utilisation
-![Use case diagram](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/use_case.png?raw=true)
-
-Diagramme de séquence
-![Diagramme_Sequence](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/sequence.png?raw=true)
-
-Diagramme de classes
-![Diagramme_Classes](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/diagramme_classes_naza.png?raw=true)
-
 
 
