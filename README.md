@@ -137,3 +137,14 @@ Projet open-source – Licence MIT
 ## 📬 Contact
 
 En cas de questions, ouvrez un ticket GitHub ou contactez les membres de l'équipe.
+
+## Conception
+
+![Use case diagram](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/use_case.png?raw=true)
+
+![Diagramme_Sequence](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/sequence.png?raw=true)
+
+![Diagramme_Classes](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/diagramme_classes?raw=true)
+
+
+
