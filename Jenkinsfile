@@ -60,13 +60,33 @@ pipeline {
             }
         }
    
+       stage('Build and Push Docker Images') {
+                steps {
+                    script {
+                        def backendTag = "${REGISTRY}/${REPOSITORY}/${BACKEND_IMAGE}:${env.BUILD_NUMBER}"
+                        def frontendTag = "${REGISTRY}/${REPOSITORY}/${FRONTEND_IMAGE}:${env.BUILD_NUMBER}"
+    
+                        bat "docker build -t ${backendTag} -f Backend/auth/Dockerfile ./Backend/auth"
+                        bat "docker build -t ${frontendTag} -f Frontend/Dockerfile ./Frontend"
+    
+                        bat "docker push ${backendTag}"
+                        bat "docker push ${frontendTag}"
+    
+                        writeFile file: '.env', text: """
+                        BACKEND_IMAGE=${backendTag}
+                        FRONTEND_IMAGE=${frontendTag}
+                        """.stripIndent()
+                    }
+                }
+            }
+
 
 
         stage('Generate Kubernetes Deployment') {
                 steps {
                     script {
-                      def backendImage = "docker.io/ssissila/image-backend:25"
-                      def frontendImage = "docker.io/ssissila/image-frontend:25"
+                         def backendTag = "${REGISTRY}/${REPOSITORY}/${BACKEND_IMAGE}:${env.BUILD_NUMBER}"
+                         def frontendTag = "${REGISTRY}/${REPOSITORY}/${FRONTEND_IMAGE}:${env.BUILD_NUMBER}"
 
             
                         writeFile file: 'k8s/k8s-deploy.yaml', text: """
