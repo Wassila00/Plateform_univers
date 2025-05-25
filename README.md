@@ -134,6 +134,9 @@ npm run start-all
 
 Ce projet utilise un pipeline CI/CD automatisé géré par **Jenkins**, avec déploiement sur un cluster **Kubernetes local (Minikube)**.
 
+CI/CD pipeline
+![CI/CD pipeline](https://github.com/Wassila00/Plateform_univers/blob/wafae/Conception/pipeline devops?raw=true)
+
 ### ⚙️ Étapes du pipeline
 
 1. **📥 Clone du dépôt**
