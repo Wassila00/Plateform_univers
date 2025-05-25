@@ -173,6 +173,12 @@ CI/CD pipeline
 
 Le pipeline est lancé automatiquement à chaque `commit` grâce à un **webhook GitHub** configuré via **ngrok** 
 
+---
+### 📊 Monitoring avec Prometheus & Grafana
+Un système de supervision est intégré pour observer l’état de l’application et du cluster :
+
+- Prometheus collecte les métriques exposées par Spring Boot (/actuator/prometheus) et Kubernetes.
+- Grafana affiche des dashboards (état des jobs Jenkins, uptime, erreurs HTTP, etc.).
 
 ---
 
@@ -181,8 +187,12 @@ Le pipeline est lancé automatiquement à chaque `commit` grâce à un **webhook
 - `Jenkinsfile` – Définit toutes les étapes CI/CD
 - `Dockerfile` – Définit la construction des images pour le backend et frontend
 - `k8s/k8s-deploy.yaml` – Génére dynamiquement les ressources Kubernetes
+- monitoring/prometheus-config.yaml – Configuration de Prometheus
+- monitoring/grafana-deploy.yaml – Déploiement de Grafana
+- monitoring/dashboards/ – Dashboards personnalisés (au format JSON)
 
 ---
+
 
 > 🔐 Accès DockerHub : les identifiants sont gérés via `dockerhub-login` dans Jenkins Credentials
 
